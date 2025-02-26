@@ -2,9 +2,9 @@ name: ci-test
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   test:
@@ -20,6 +20,12 @@ jobs:
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
+
+      - name: Set Environment Variables
+        run: echo "DATABASE_URL=${{ secrets.DB_MIGRATOR_ADDR }}" >> $GITHUB_ENV
+
+      - name: Run migrations
+        run: make migrate-up
 
       - name: tests
         run: make test

@@ -1,0 +1,1 @@
+@migrate -path=$(MIGRATIONS_PATH) -database=$(DB_MIGRATOR_ADDR) --verbose down $(filter-out $@,$(MAKECMDGOALS))

@@ -24,6 +24,13 @@ jobs:
       - name: Set Environment Variables
         run: echo "DATABASE_URL=${{ secrets.DB_MIGRATOR_ADDR }}" >> $GITHUB_ENV
 
+      - name: Connect to Server
+        env:
+          DATABASE_URL: ${{ secrets.DB_MIGRATOR_ADDR }}
+          run: |
+            PGPASSWORD=$(echo $DATABASE_URL | sed -E 's/.*password=([^ ]+).*/\1/') \
+            psql "$DATABASE_URL" -c "SELECT 1;"
+
       - name: Install golang-migrate
         run: |
           curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz

@@ -27,9 +27,9 @@ jobs:
       - name: Connect to Server
         env:
           DATABASE_URL: ${{ secrets.DB_MIGRATOR_ADDR }}
-          run: |
-            PGPASSWORD=$(echo $DATABASE_URL | sed -E 's/.*password=([^ ]+).*/\1/') \
-            psql "$DATABASE_URL" -c "SELECT 1;"
+        run: |
+          PGPASSWORD=$(echo $DATABASE_URL | sed -E 's/.*password=([^ ]+).*/\1/') \
+          psql "$DATABASE_URL" -c "SELECT 1;"
 
       - name: Install golang-migrate
         run: |

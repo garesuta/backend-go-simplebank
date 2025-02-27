@@ -39,7 +39,7 @@ jobs:
 
       - name: Run migrations
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DB_MIGRATOR_ADDR }}
         run: make migrate-up
 
       - name: tests

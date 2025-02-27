@@ -38,6 +38,8 @@ jobs:
           which migrate
 
       - name: Run migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: make migrate-up
 
       - name: tests

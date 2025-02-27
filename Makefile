@@ -1,4 +1,6 @@
 MIGRATIONS_PATH = ./db/migration
+DB_URL ?= $(DATABASE_URL)
+DB_MIGRATOR ?= $(or $(DB_URL), $(DB_MIGRATOR_ADDR))
 
 .PHONY: migrate-create
 migration:

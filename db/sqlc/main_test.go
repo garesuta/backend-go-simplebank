@@ -6,23 +6,28 @@ import (
 	"os"
 	"testing"
 
+	"github.com/backendproduction-2/util"
 	_ "github.com/lib/pq"
-)
-
-const (
-	dbDriver = "postgres"
-	dbSource = "postgresql://neondb_owner:npg_wCMz4j1Epxga@ep-crimson-hill-a12phdeg-pooler.ap-southeast-1.aws.neon.tech/backenddb-2?sslmode=require"
 )
 
 var testQueries *Queries
 var testDB *sql.DB
 
 func TestMain(m *testing.M) {
-	var err error
+	config, err := util.LoadConfig("../..")
+	if err != nil {
+		log.Fatal("can't load config", err)
+	}
+
+	dbDriver := config.DBDriver
+	dbSource := config.DBSource
+
 	testDB, err = sql.Open(dbDriver, dbSource)
 	if err != nil {
 		log.Fatal("can't connect to the db", err)
 	}
+	defer testDB.Close()
+
 	testQueries = New(testDB)
 
 	os.Exit(m.Run())

@@ -1,23 +1,36 @@
 MIGRATIONS_PATH = ./db/migration
-DB_URL ?= $(DATABASE_URL)
-DB_MIGRATOR ?= $(or $(DB_URL), $(DB_MIGRATOR_ADDR))
+# Ensure .env variables are loaded before executing commands
+ifneq (,$(wildcard app.env))
+    include app.env
+    $(eval export sed 's/=.*//' app.env)
+endif
 
-.PHONY: migrate-create
 migration:
 	@migrate create -seq -ext sql -dir $(MIGRATIONS_PATH) $(filter-out $@,$(MAKECMDGOALS))
 
-.PHONY: migrate-up
 migrate-up:
-	@migrate -path=$(MIGRATIONS_PATH) -database=$(DB_MIGRATOR_ADDR) --verbose up 
+	@migrate -path=$(MIGRATIONS_PATH) -database=$(DB_SOURCE) --verbose up 
 
-.PHONY: migrate-down
+migrate-up1:
+	@migrate -path=$(MIGRATIONS_PATH) -database=$(DB_SOURCE) --verbose up 1
+
 migrate-down:
-	@migrate -path=$(MIGRATIONS_PATH) -database=$(DB_MIGRATOR_ADDR) --verbose down 
+	@migrate -path=$(MIGRATIONS_PATH) -database=$(DB_SOURCE) --verbose down 
 
-.PHONY: sqlc
+migrate-down1:
+	@migrate -path=$(MIGRATIONS_PATH) -database=$(DB_SOURCE) --verbose down 1
+
 sqlc:
 	sqlc generate
 
-.PHONY: test
 test:
 	go test -v -cover ./...
+
+server:
+	go run main.go
+
+mock:
+	mockgen -package mockdb -destination db/mock/store.go github.com/backendproduction-2/db/sqlc Store 
+
+
+.PHONY: migrate-create migrate-up migrate-down migrate-up1 migrate-down1 sqlc test server mock

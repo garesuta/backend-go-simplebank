@@ -20,6 +20,12 @@ migrate-down:
 migrate-down1:
 	@migrate -path=$(MIGRATIONS_PATH) -database=$(DB_SOURCE) --verbose down 1
 
+db_docs:
+	dbdocs build doc/db.dbml
+
+db_schema:
+	dbml2sql --postgres -o doc/schema.sql doc/db.dbml
+
 sqlc:
 	sqlc generate
 
@@ -32,5 +38,13 @@ server:
 mock:
 	mockgen -package mockdb -destination db/mock/store.go github.com/backendproduction-2/db/sqlc Store 
 
+proto:
+	rm -f pb/*.go
+	protoc --proto_path=proto  --go_out=pb --go_opt=paths=source_relative \
+    --go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+    proto/*.proto
 
-.PHONY: migrate-create migrate-up migrate-down migrate-up1 migrate-down1 sqlc test server mock
+evans:
+	evans --host localhost --port 9090  -r repl
+
+.PHONY: migrate-create migrate-up migrate-down migrate-up1 migrate-down1 db_docs db_schema sqlc test server mock proto evans

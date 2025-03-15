@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  api: 
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      -"8080:8080"
+    environment:
+      - DB_SOURCE=postgresql://neondb_owner:npg_wCMz4j1Epxga@ep-crimson-hill-a12phdeg-pooler.ap-southeast-1.aws.neon.tech/backenddb-2?sslmode=require
+    depends_on:
+      - postgresql

@@ -7,8 +7,8 @@ COPY . .
 
 RUN go build -o main main.go
 
-RUN apt-get update && apt-get install -y
-RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz
+# RUN apt-get update && apt-get install -y
+# RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz
 
 # Run stage
 FROM golang:1.23.4
@@ -19,7 +19,7 @@ COPY app.env .
 COPY start.sh .
 
 # copy all migration to docker
-COPY db/migration ./migration
+COPY db/migration .db/migration
 
 # inform docker port
 EXPOSE 8080
